@@ -1,4 +1,3 @@
-import {start} from 'repl';
 import { Whatsapp, create, Message, SocketState } from "venom-bot";
 
 
@@ -10,7 +9,7 @@ class Sender {
         this.initialize();
     };
 
-  async sendText(to: string, body: string) {
+   sendText(to: string, body: string) {
       //this.sendText("5571988928500@c.us", "Essa mensagem foi enviada pelo bot");
     this.client.sendText(to, body);
     }
@@ -23,15 +22,13 @@ class Sender {
        const start = (client: Whatsapp) => {
             this.client = client;
             console.log("Client is ready")
-             
         };
 
-    create("wpp-sender",qr, status)
-        .then((client: Whatsapp) => start(client))
-        .catch((erro: string) => {
+    create("wpp-sender",qr, status).then((client: Whatsapp) => start(client)).catch((erro: string) => {
             console.log(erro);
+            });
         }
-        )}
-    };
+        };
+
 
     export default Sender;

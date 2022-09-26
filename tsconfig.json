@@ -12,5 +12,6 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "strictPropertyInitialization": false,
+    "sourceMap": true,
   }
 }
