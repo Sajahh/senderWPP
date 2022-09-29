@@ -1,34 +1,30 @@
 import { Whatsapp, create, Message, SocketState } from "venom-bot";
 
-
-class Sender {
+export class Sender {
     private client: Whatsapp;
-    
 
     constructor() {
         this.initialize();
     };
 
-   sendText(to: string, body: string) {
-      //this.sendText("5571988928500@c.us", "Essa mensagem foi enviada pelo bot");
-    this.client.sendText(to, body);
+    async sendText(to: string, message: string) {
+      //this.sendText("557188928500@c.us", "Essa mensagem foi enviada pelo bot");
+    await this.client.sendText(to, message).catch((erro) => console.log(erro));
     }
 
     private initialize() {
-        const qr = (base64Qrimg: string) => {};
+        const qr = (base64Qrimg: string) => {
+            console.log("QR RECEIVED", base64Qrimg);
+        };
 
-        const status = (statusSession: string ) => {};
+        const statusFind = (statusSession: string ) => {
+            console.log(`Esse é o Status da Sessão: ${statusSession}`);
+        };
 
        const start = (client: Whatsapp) => {
             this.client = client;
             console.log("Client is ready")
         };
-
-    create("wpp-sender",qr, status).then((client: Whatsapp) => start(client)).catch((erro: string) => {
-            console.log(erro);
-            });
-        }
-        };
-
-
-    export default Sender;
+       create("wpp-sender-test", qr, statusFind).then((client) => start(client)).catch((erro) => console.log(erro));
+    };
+}
