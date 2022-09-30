@@ -1,3 +1,4 @@
+import { start } from "repl";
 import { Whatsapp, create, Message, SocketState } from "venom-bot";
 
 export class Sender {
@@ -5,6 +6,7 @@ export class Sender {
 
     constructor() {
         this.initialize();
+        
     };
 
     async sendText(to: string, message: string) {
@@ -13,18 +15,14 @@ export class Sender {
     }
 
     private initialize() {
-        const qr = (base64Qrimg: string) => {
-            console.log("QR RECEIVED", base64Qrimg);
-        };
+        const qr = (base64Qrimg: string) => {};
 
-        const statusFind = (statusSession: string ) => {
-            console.log(`Esse é o Status da Sessão: ${statusSession}`);
-        };
+        const status = (statusSession: string ) => {};
 
        const start = (client: Whatsapp) => {
             this.client = client;
             console.log("Client is ready")
         };
-       create("wpp-sender-test", qr, statusFind).then((client) => start(client)).catch((erro) => console.log(erro));
+       create("wpp-sender-test", qr, status).then((client) => start(client)).catch((erro) => console.log(erro));
     };
 }
