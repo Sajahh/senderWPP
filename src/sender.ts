@@ -1,28 +1,45 @@
-import { start } from "repl";
+import parsePhoneNumber, {isValidPhoneNumber} from "libphonenumber-js";
 import { Whatsapp, create, Message, SocketState } from "venom-bot";
-
 export class Sender {
     private client: Whatsapp;
+    private connected: boolean;
+
+    get IsConnected(): boolean {
+        return this.connected;
+    };
 
     constructor() {
         this.initialize();
-        
     };
 
     async sendText(to: string, message: string) {
-      //this.sendText("557188928500@c.us", "Essa mensagem foi enviada pelo bot");
-    await this.client.sendText(to, message).catch((erro) => console.log(erro));
+        if(!isValidPhoneNumber(to, "BR")) {
+            throw new Error("Número inválido");
+        };
+        let phoneNumber = parsePhoneNumber(to, "BR")?.format("E.164").replace("+", "") as string; 
+        phoneNumber = phoneNumber.includes("@c.us") ? phoneNumber : `${phoneNumber}@c.us`
+
+        await this.client.sendText(phoneNumber, message).catch((erro) => console.log(erro));
+        console.log(phoneNumber);
     }
 
     private initialize() {
-        const qr = (base64Qrimg: string) => {};
-
-        const status = (statusSession: string ) => {};
-
-       const start = (client: Whatsapp) => {
-            this.client = client;
-            console.log("Client is ready")
+        const   status = (state: SocketState) => {
+            console.log("Status da conexão: ", state);
+            if(state === "CONNECTED" || state === "SYNCING" || state === "UNPAIRED" || state === "UNLAUNCHED" ||  state === "OPENING" || state === "PAIRING") {
+                this.connected = true;
+            } else {
+                this.connected = false;
+            };
         };
-       create("wpp-sender-test", qr, status).then((client) => start(client)).catch((erro) => console.log(erro));
+
+        const start = (client: Whatsapp) => {
+            this.client = client;
+            console.log("Cliente iniciado");
+            client.onStateChange(status);
+        };
+        create({session: 'whatsappbot', multidevice: true})
+            .then((client) => start(client))
+            .catch((erro) => {console.log(erro)});
     };
-}
+};

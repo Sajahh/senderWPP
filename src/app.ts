@@ -6,7 +6,13 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
 
-app.get("/status", (req: Request, res: Response) => {});
+app.get("/status", (req: Request, res: Response) => {
+    if(sender.IsConnected) {
+        res.status(200).send({Status: "Conectado"});
+    } else {
+        res.status(500).send({Status: "Desconectado"});
+    }
+});
 
 app.get("/send", async (req: Request, res: Response) => {
     const {to, message} = req.body;
@@ -20,6 +26,5 @@ app.get("/send", async (req: Request, res: Response) => {
        return res.status(500).json({message: "Erro ao enviar mensagem"});
     }
 });
-
 
 app.listen(8000);
